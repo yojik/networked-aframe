@@ -25,10 +25,11 @@ class Schemas {
         NAF.log.error(`Template el not found for ${schema.template}, make sure NAF.schemas.add is called after <a-scene> is defined.`);
         return;
       }
+      templateEl.normalize();
       if (!this.validateTemplate(schema, templateEl)) {
         return;
       }
-      this.templateCache[schema.template] = document.importNode(templateEl.content, true);
+      this.templateCache[schema.template] = document.importNode(templateEl, true);
     } else {
       NAF.log.error('Schema not valid: ', schema);
       NAF.log.error('See https://github.com/haydenjameslee/networked-aframe#syncing-custom-components');
@@ -43,6 +44,7 @@ class Schemas {
         NAF.log.error(`Template el for ${template} is not in the scene, add the template to <a-assets> and register with NAF.schemas.add.`);
       }
     }
+    console.log(this.templateCache[template])
     return this.templateCache[template].firstElementChild.cloneNode(true);
   }
 
@@ -84,11 +86,11 @@ class Schemas {
   }
 
   isTemplateTag(el) {
-    return el.tagName.toLowerCase() === 'template';
+    return el.tagName.toLowerCase() === 'template' || el.tagName.toLowerCase() === 'naf-template'
   }
 
   templateHasOneOrZeroChildren(el) {
-    return el.content.childElementCount < 2;
+    return el.childElementCount < 2;
   }
 
   remove(template) {
